@@ -45,7 +45,7 @@ class fishMarket():
         
         return AveragedData
     
-    def DataUpload(self):
+    def DataUploadS3(self):
         #send data to csv file
         for Set in self.AverageData:
             Set.to_csv("JacobF.csv")
@@ -54,11 +54,25 @@ class fishMarket():
         self.s3_client.upload_file(Filename="JacobF.csv",Bucket=self.bucket_name,Key="Data26/fish/JacobF.csv")
 
 
+def test():
+    test = fishMarket()
+
+    test.Keys = test.KeysFromString(Start="python/fish")
+    if test.Keys == ['python/fish-market-mon.csv', 'python/fish-market-tues.csv', 'python/fish-market.csv']: print("Keys are correct") 
+    else: print("Keys are incorrect")
+
+    test.Data = test.DataFrames()
+    if test.Data != []: print("Data is correct")
+    else: print("Data is empty")
+
+    test.AverageData = test.AverageGroupData("Species")
+    if test.AverageData != []: print("Averaged data is correct")
+    else: print("Averaged data is empty")
+    
+    test.DataUploadS3()
+    test_object = test.s3_client.get_object(Bucket = test.bucket_name, Key="Data26/fish/JacobF.csv")
+    if test_object is not None: print("Data upload complete")
+    else: print("No Data in target")
 
 
-fish = fishMarket()
-
-fish.Keys = fish.KeysFromString(Start="python/fish")
-fish.Data = fish.DataFrames()
-fish.AverageData = fish.AverageGroupData("Species")
-fish.DataUpload()
+test()
