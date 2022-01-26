@@ -1,5 +1,6 @@
 import boto3
 import pandas as pd
+#import pymongo
 
 
 
@@ -21,7 +22,7 @@ class fishMarket():
         
         #get keys from items that start with a particular string
         for keys in bucket_contents["Contents"]:
-            if keys["Key"].startswith(Start) == True: 
+            if keys["Key"].startswith(Start) == True and keys["Key"].endswith(".csv"): 
                 Key_Array.append(keys["Key"])
 
         return Key_Array
@@ -49,9 +50,19 @@ class fishMarket():
         #send data to csv file
         for Set in self.AverageData:
             Set.to_csv("JacobF.csv")
-        
+                    
         #send csv to file
         self.s3_client.upload_file(Filename="JacobF.csv",Bucket=self.bucket_name,Key="Data26/fish/JacobF.csv")
+        
+    def DataUploadEC2(self):
+        # #open client in mongodb
+        # client = pymongo.MongoClient("mongodb://35.158.210.57:27017/Sparta")
+        # db = client.Sparta
+        
+        # #loop through data, convert to dictionary and insert into database
+        # for Set in self.AverageData:
+        #     db.collection.insert_many(Set.to_dict('records'))
+        return None
 
 
 def test():
